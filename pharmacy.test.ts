@@ -95,9 +95,17 @@ describe("Pharmacy", () => {
 
 // "Dafalgan"
 describe("Pharmacy", () => {
-  it("should decrease the benefit and expiresIn", () => {
+  it("should decrease the benefit by 2 and expiresIn by 1", () => {
     expect(new Pharmacy([new Drug("Dafalgan", 2, 3)]).updateBenefitValue()).toEqual(
       [new Drug("Dafalgan", 1, 1)],
+    );
+  });
+});
+
+describe("Pharmacy", () => {
+  it("should decrease the benefit by 4 and expiresIn by 1", () => {
+    expect(new Pharmacy([new Drug("Dafalgan", 0, 6)]).updateBenefitValue()).toEqual(
+      [new Drug("Dafalgan", -1, 2)],
     );
   });
 });
