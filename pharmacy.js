@@ -63,4 +63,12 @@ export class Pharmacy {
 
     return this.drugs;
   }
+
+  // updateHerbalTeaBenefitValue
+
+  // updateMagicPillBenefitValue
+
+  // updateFervexBenefitValue
+
+  // updateDafalganBenefitValue
 }
