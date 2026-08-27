@@ -1,63 +1,43 @@
 export class Drug {
-  constructor(public name: string, public expiresIn: number, public benefit: number) {}
+  constructor(
+    public name: string,
+    public expiresIn: number,
+    public benefit: number
+  ) {}
 }
 
 export class Pharmacy {
-  constructor(drugs = []) {
-    this.drugs = drugs;
-  }
-  updateBenefitValue() {
-    for (var i = 0; i < this.drugs.length; i++) {
-      if (
-        this.drugs[i].name != "Herbal Tea" &&
-        this.drugs[i].name != "Fervex"
-      ) {
-        if (this.drugs[i].benefit > 0) {
-          if (this.drugs[i].name != "Magic Pill") {
-            this.drugs[i].benefit = this.drugs[i].benefit - 1;
-          }
-        }
-      } else {
-        if (this.drugs[i].benefit < 50) {
-          this.drugs[i].benefit = this.drugs[i].benefit + 1;
-          if (this.drugs[i].name == "Fervex") {
-            if (this.drugs[i].expiresIn < 11) {
-              if (this.drugs[i].benefit < 50) {
-                this.drugs[i].benefit = this.drugs[i].benefit + 1;
-              }
-            }
-            if (this.drugs[i].expiresIn < 6) {
-              if (this.drugs[i].benefit < 50) {
-                this.drugs[i].benefit = this.drugs[i].benefit + 1;
-              }
-            }
-          }
-        }
+  constructor(public drugs: Drug[]) {}
+  
+  updateBenefitValue(): Drug[] {
+    const newDrugs: Drug[] = [];
+    for (const drug of this.drugs) {
+      const drugName: string = drug.name;
+      let newDrug: Drug;
+
+      switch (drugName) {
+        case "Herbal Tea" :
+          newDrug = this.updateHerbalTeaBenefitValue(drug);
+          break;
+        case "Fervex" :
+          newDrug = this.updateFervexBenefitValue(drug);
+          break;
+        case "Magic Pill" :
+          newDrug = this.updateMagicPillBenefitValue(drug);
+          break;
+        case "Dafalgan" :
+          newDrug = this.updateDafalganBenefitValue(drug);
+          break;
+        default:
+          newDrug = this.updateRegularDrugBenefitValue(drug);
+          break;
       }
-      if (this.drugs[i].name != "Magic Pill") {
-        this.drugs[i].expiresIn = this.drugs[i].expiresIn - 1;
-      }
-      if (this.drugs[i].expiresIn < 0) {
-        if (this.drugs[i].name != "Herbal Tea") {
-          if (this.drugs[i].name != "Fervex") {
-            if (this.drugs[i].benefit > 0) {
-              if (this.drugs[i].name != "Magic Pill") {
-                this.drugs[i].benefit = this.drugs[i].benefit - 1;
-              }
-            }
-          } else {
-            this.drugs[i].benefit =
-              this.drugs[i].benefit - this.drugs[i].benefit;
-          }
-        } else {
-          if (this.drugs[i].benefit < 50) {
-            this.drugs[i].benefit = this.drugs[i].benefit + 1;
-          }
-        }
-      }
+
+      newDrugs.push(newDrug);
     }
 
-    return this.drugs;
+    this.drugs = newDrugs;
+    return newDrugs;
   }
 
   // "Herbal Tea" actually increases in Benefit the older it gets. Benefit increases twice as fast after the expiration date.
@@ -80,9 +60,11 @@ export class Pharmacy {
     let benefit: number = fervex.benefit;
     const expiresIn: number = fervex.expiresIn;
 
-    if (expiresIn <= 5) {
+    if (expiresIn < 1) {
+      benefit = 0;
+    } else if (expiresIn < 6) {
       benefit += 3;
-    } else if (expiresIn <= 10) {
+    } else if (expiresIn < 11) {
       benefit += 2;
     } else {
       benefit += 1;
@@ -106,18 +88,18 @@ export class Pharmacy {
     return {
       name: dafalgan.name,
       expiresIn: this.decreaseExpiredIn(expiresIn),
-      benefit: this.checkBenefitAboveZero(expiresIn < 0 ? benefit - 4 : benefit - 2)
+      benefit: this.checkBenefitAboveZero(expiresIn <= 0 ? (benefit - 4) : (benefit - 2))
     }
   }
 
-  updateRegularDrugs(drug: Drug): Drug {
+  updateRegularDrugBenefitValue(drug: Drug): Drug {
     const expiresIn: number = drug.expiresIn;
     const benefit: number = drug.benefit;
 
     return {
       name: drug.name,
       expiresIn: this.decreaseExpiredIn(expiresIn),
-      benefit: this.checkBenefitAboveZero(expiresIn < 0 ? benefit - 2 : benefit - 1)
+      benefit: this.checkBenefitAboveZero(expiresIn <= 0 ? (benefit - 2) : (benefit - 1))
     }
   }
 
