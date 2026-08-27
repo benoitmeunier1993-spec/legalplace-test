@@ -8,7 +8,9 @@
     "test": "jest",
     "start": "babel-node index.js"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@babel/preset-typescript": "^8.0.1"
+  },
   "dependencies": {
     "@babel/cli": "^7.24.1",
     "@babel/core": "^7.24.4",
